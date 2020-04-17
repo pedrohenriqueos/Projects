@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Create Page{% endblock %}
+
+{% block content %}
+<div class="container">
+	<center>
+	<form action="#" method = "post">
+		<div class="col-sm-3 my-5">
+			<div class="form-group">
+				<label for="username" >Name:</label><br>
+				<input type="text" class="form-control" id ="username" name="nm"/>
+			</div>
+			<div class="form-group">
+				<label for="senha">Password:</label><br>
+				<input type="password" class="form-control" id="senha" name="pass" >
+			</div>
+			<div class="form-group">
+				<label for="senha2">Confirm Password:</label><br>
+				<input type="password" class="form-control" id="senha2" name="pass2" >
+			</div>
+			<input type="submit" value="submit" class="btn btn-primary btn-block"/>
+		</div>
+	</form>
+	</center>
+</div>
+{% endblock %}

@@ -1,0 +1,34 @@
+{% extends "baseuser.html" %}
+{% block title %}{{name}} Page{% endblock %}
+{% block User_name %}{{name}}{% endblock %}
+{% block content %}
+<main role="main" class="container">
+	<div class="starter-template">
+		<h1>{{name}}</h1>
+		
+		
+		<table class="table">
+		
+		  <thead class="thead-dark">
+			<tr>
+			  <th scope="col">Quest</th>
+			  <th scope="col">Ans</th>
+			  <th scope="col">Submition</th>
+			  <th scope="col">Reference</th>
+			</tr>
+		  </thead>
+		  <tbody>
+		  	{% for dado in dados %}
+				<tr>
+				  {% for x in dado %}
+				  	<td>{{ dado[x] }}</td>
+				  {% endfor %}
+				</tr>
+				
+			{% endfor %}
+		  </tbody>
+		</table>
+	</div>
+</main>
+
+{% endblock %}
