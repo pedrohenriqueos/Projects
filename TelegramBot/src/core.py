@@ -1,21 +1,20 @@
 from telegram import ParseMode
 from telegram.ext import CommandHandler, Filters, MessageHandler, Updater
-from conf.settings import BASE_API_URL, TELEGRAM_TOKEN, PASSWORD, HOST_DB, USER_DB, PASSWORD_DB, DB
+from conf.settings import TELEGRAM_TOKEN, PASSWORD, HOST_DB, USER_DB, PASSWORD_DB, DB
 from back import Back
 import datetime
 import pymysql.cursors
-import logging
-import time
 
+urls = {'codeforces':'https://codeforces.com/contests/','atcoder':'https://atcoder.jp/'}
 
 class TelegramCommands():
 	def __init__(self):
 		self.connection = pymysql.connect(host=HOST_DB,
-	                             user=USER_DB,
-	                             password=PASSWORD_DB,
-	                             db=DB,
-	                             charset='utf8',
-	                             cursorclass=pymysql.cursors.DictCursor)
+		                                  user=USER_DB,
+		                                  password=PASSWORD_DB,
+		                                  db=DB,
+		                                  charset='utf8',
+		                                  cursorclass=pymysql.cursors.DictCursor)
 		self.cursor = self.connection.cursor()
 
 	def start(self,bot,update):
@@ -35,13 +34,13 @@ class TelegramCommands():
 		)
 
 	def nexts(self,bot,update):
-		sql = "SELECT `name`,`date` FROM bot_t"
+		sql = "SELECT `name`,`date`,`cod` FROM bot_t ORDER BY `date` ASC"
 		self.cursor.execute(sql)
 		result = self.cursor.fetchall()
 		response_message = "Próximos contests:\n"
 
 		for dado in result:
-			response_message += "["+str(dado["name"])+"]("+BASE_API_URL+")\n"+str(dado["date"].strftime("%d/%m/%y %H:%M"))+"\n"
+			response_message += "["+dado["name"]+"]("+urls[dado['cod']]+")\n"+dado["date"].strftime("%d/%m/%y %H:%M")+"\n"
 		if response_message=="Próximos contests:\n":
 			response_message = "Não há contests próximos"
 		
@@ -52,15 +51,14 @@ class TelegramCommands():
 		)
 
 	def today(self,bot,update):
-		sql = "SELECT `name`,`date` FROM bot_t WHERE DAY(date)=%s AND MONTH(date)=%s"
+		sql = "SELECT `name`,`date`,`cod` FROM bot_t WHERE DAY(date)=%s AND MONTH(date)=%s ORDER BY `date` ASC"
 		today = datetime.datetime.now()
 		self.cursor.execute(sql,(today.day,today.month))
-		result = self.cursor.fetchall()
-		
+		result = self.cursor.fetchall()		
 		response_message = "Contests de hoje:\n"
 		
 		for dado in result:
-			response_message += "["+str(dado["name"])+"]("+BASE_API_URL+")\n"+str(dado["date"].strftime("%d/%m/%y %H:%M"))+"\n"		
+			response_message += "["+dado["name"]+"]("+urls[dado['cod']]+")\n"+dado["date"].strftime("%d/%m/%y %H:%M")+"\n"		
 		if response_message == "Contests de hoje:\n":
 			response_message = "Não há contests hoje"
 
@@ -84,26 +82,20 @@ class TelegramCommands():
 		dispatcher.add_handler(
 			CommandHandler('start',self.start)
 		)
-		
 		dispatcher.add_handler(
 			CommandHandler('nexts',self.nexts)
 		)
-		
 		dispatcher.add_handler(
 			CommandHandler('today',self.today)
 		)
-
 		dispatcher.add_handler(
 			CommandHandler('stop',self.stop)
 		)
-
 		dispatcher.add_handler(
 			MessageHandler(Filters.command, self.unknown)
 		)
-		
 		updater.start_polling()
 		updater.idle()
-
 
 if __name__=='__main__':
 	print("press CTRL + C to cancel.")
