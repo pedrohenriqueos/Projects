@@ -5,7 +5,7 @@ from back import Back
 import datetime
 import pymysql.cursors
 
-urls = {'codeforces':'https://codeforces.com/contests/','atcoder':'https://atcoder.jp/'}
+urls = {'codeforces':'https://codeforces.com/contests/','atcoder':'https://atcoder.jp/','teste':'https://google.com/'}
 
 class TelegramCommands():
 	def __init__(self):
